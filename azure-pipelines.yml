@@ -1,0 +1,28 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: ProjectC
+
+steps:
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: 'lk-customer-support-dtl-sc'
+      subscriptionId: '5f96bde1-56b4-48b1-9ec1-ed3f21a70196'
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: '$(rgName)'
+      location: 'East US 2'
+      templateLocation: 'URL of the file'
+      csmFileLink: '$(templateLink)'
+      overrideParameters: '-projectName $(projectName) -env $(env) -costThreshold $(costThreshold) -maxAllowedVmsPerUser $(maxAllowedVmsPerUser) -maxAllowedVmsPerLab $(maxAllowedVmsPerLab) -allowedVmSizes "$(allowedVmSizes)" -allowedBaseImages "$(allowedBaseImages)" -vnetAddressPrefix $(vnetAddressPrefix) -subnet1Prefix $(subnet1Prefix) -subnet2Prefix $(subnet2Prefix)'
+      deploymentMode: 'Incremental'
+      deploymentName: 'DeployDevTestLabARM'
